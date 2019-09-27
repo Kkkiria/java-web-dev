@@ -7,34 +7,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 
-/**
- * @author 联想
- * @date 2019.9.22
- * 登陆请求响应
- */
-@WebServlet(urlPatterns = "/login.do")
-class loginServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/login")
+public class LoginServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-        //处理请求乱码
-        req.setCharacterEncoding("UTF-8");
-        //通过req请求参数获取前台表单的用户名参数
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
-        //获取密码参数
         String password = req.getParameter("password");
-        //跳转之前把用户名和密码存入req对象
-//        req.setAttribute("username", username);
-//        req.setAttribute("password", password);
-        //通过req跳转，服务器跳转
-//        req.getRequestDispatcher("/index.jsp").forward(req,resp);
-
-        //通过req请求对象获取session会话对象
-        HttpSession session = req.getSession();
-        //把用户名存入session对象
-        session.setAttribute("username",username);
-        session.setAttribute("password",password);
-        //通过resp跳转
-        resp.sendRedirect("/index.jsp");
+        if ("admin".equals(username) && "111".equals(password)) {
+            HttpSession session = req.getSession();
+            session.setAttribute("username", username);
+            resp.sendRedirect("index");
+        } else {
+            resp.setCharacterEncoding("UTF-8");
+            resp.setContentType("text/html;charset=UTF-8");
+            PrintWriter writer = resp.getWriter();
+            writer.print("<script>alert('登录失败');location.href='/';</script>");
+        }
     }
 }
